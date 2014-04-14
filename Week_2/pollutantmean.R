@@ -20,6 +20,7 @@ readCsvData <- function(directory, id = 1:332)
   library(stringr)
   for(i in id)
   {
+          print(getwd())
     tmp <- i
     if(tmp < 10)
     {
@@ -29,7 +30,7 @@ readCsvData <- function(directory, id = 1:332)
     {
         tmp <- paste("0", tmp)
     }
-    csvFile <- paste(directory, tmp, ".csv")
+    csvFile <- paste(getwd(), '/', directory,'/', tmp, ".csv")
     csvFileStrip <- str_replace_all(string=csvFile, pattern=" ", repl="")
     print(csvFileStrip)
     data1file <- read.csv(csvFileStrip, dec=",", header=TRUE)
