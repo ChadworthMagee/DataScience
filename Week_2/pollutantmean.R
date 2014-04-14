@@ -12,13 +12,12 @@
 pollutantmean <- function(directory, pollutant, id = 1:332) 
 {
   csv <- readCsvData(directory, id)
-  #View(csv)
+  View(csv)
 }
 
 readCsvData <- function(directory, id = 1:332)
 {
   library(stringr)
-  data <- NULL
   for(i in id)
   {
     tmp <- i
@@ -34,13 +33,15 @@ readCsvData <- function(directory, id = 1:332)
     csvFileStrip <- str_replace_all(string=csvFile, pattern=" ", repl="")
     print(csvFileStrip)
     data1file <- read.csv(csvFileStrip, dec=",", header=TRUE)
-    nitrateValues <- c(data1file["nitrate"])
-    data <- c(nitrateValues, data) 
-    #data <- rbind(nitrateValues)
-    #print(nitrateValues[2])
-    
-    print(paste("length nitrateValues", length(nitrateValues$nitrate))) # works
-    print(paste("length data", length(data$nitrate))) # works
+    if(tmp == '00 1')
+    {
+        x <- data1file
+    }
+    else
+    {
+        x <- rbind(x, data1file)
+    }
+    print(nrow(x))
   }
-  data1file
+  x
 }
