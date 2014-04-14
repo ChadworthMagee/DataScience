@@ -12,7 +12,11 @@
 pollutantmean <- function(directory, pollutant, id = 1:332) 
 {
   csv <- readCsvData(directory, id)
-  View(csv)
+  tmp <-csv["sulfate"]
+  View(tmp)
+  calculatedMean <- mean(csv["sulfate"], na.rm=TRUE);
+  print(calculatedMean)
+  #View(csv)
 }
 
 readCsvData <- function(directory, id = 1:332)
