@@ -12,19 +12,26 @@
 pollutantmean <- function(directory, pollutant, id = 1:332) 
 {
   csv <- readCsvData(directory, id)
-  tmp <-csv["sulfate"]
-  View(tmp)
-  calculatedMean <- mean(csv["sulfate"], na.rm=TRUE);
+  if(pollutant == "sulfate")
+  {
+         #print(as.double(csv$sulfate))
+        calculatedMean <- mean(csv$sulfate, na.rm = TRUE);
+        
+  }
+  else if (pollutant == "nitrate")
+  {
+        calculatedMean <- mean(as.numeric(csv$nitrate), na.rm = TRUE); 
+  }
   print(calculatedMean)
-  #View(csv)
 }
 
 readCsvData <- function(directory, id = 1:332)
 {
   library(stringr)
+  x <- NULL
   for(i in id)
   {
-          print(getwd())
+    #print(getwd())
     tmp <- i
     if(tmp < 10)
     {
@@ -37,8 +44,8 @@ readCsvData <- function(directory, id = 1:332)
     csvFile <- paste(getwd(), '/', directory,'/', tmp, ".csv")
     csvFileStrip <- str_replace_all(string=csvFile, pattern=" ", repl="")
     print(csvFileStrip)
-    data1file <- read.csv(csvFileStrip, dec=",", header=TRUE)
-    if(tmp == '00 1')
+    data1file <- read.csv(csvFileStrip, dec=".", header=TRUE)
+    if(is.null(x))
     {
         x <- data1file
     }
@@ -46,7 +53,7 @@ readCsvData <- function(directory, id = 1:332)
     {
         x <- rbind(x, data1file)
     }
-    print(nrow(x))
+    #print(nrow(x))
   }
   x
 }
