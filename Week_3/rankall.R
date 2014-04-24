@@ -22,6 +22,10 @@ rankall <- function(outcome, num = "best")
         csv <- read.table("outcome-of-care-measures.csv", header= TRUE, sep = ",", dec=".")
         #csvOrdered <- ordered <- csv[order((as.character(csv[['State']])), as.numeric(as.character(csv[[column]]))) , ]
         stateList <- unique(csv[['State']])
+        hospitalFrame=data.frame(matrix(nrow=0, ncol=2)) 
+        colnames(hospitalFrame)[1] <- "state"
+        colnames(hospitalFrame)[2] <- "hospital"
+        
         for(state in stateList)
         {
                 print(state)
@@ -30,6 +34,7 @@ rankall <- function(outcome, num = "best")
                 {
                         ordered <- csv_1state[order(as.numeric(as.character(csv_1state[[column]])), (as.character(csv_1state[[name]]))) , ]
                         hospitalName <- as.character(ordered$Hospital.Name[num])
+                        print(hospitalName)
                 }
                 else if(num == "worst")
                 {
@@ -46,8 +51,10 @@ rankall <- function(outcome, num = "best")
                         stop("invalid num")
                         break
                 }
-                #ordered <- csv_1state[order(as.numeric(as.character(csv_1state[[column]])), (as.character(csv_1state[[name]]))) , ]
-                View(ordered)
-                break
+                hospitalFrame <- rbind(hospitalFrame, data.frame(state,hospitalName))
         }
+        colnames(hospitalFrame)[1] <- "state"
+        colnames(hospitalFrame)[2] <- "hospital"
+        View(hospitalFrame)
+        hospitalFrame
 }
