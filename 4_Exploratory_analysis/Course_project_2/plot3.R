@@ -11,6 +11,7 @@ q3_typesOfSourcesBaltimore <- function(location='/home/wijnand/Downloads/emissio
         NEIdata <- readRDS(paste(location, "summarySCC_PM25.rds", sep=''))
         balt <- NEIdata[NEIdata$fips=='24510',]
         emissionPerYear <- aggregate(Emissions ~ year + type, balt, sum)
+        View(emissionPerYear)
         plotje <- ggplot(emissionPerYear, aes(year, Emissions)) + geom_line(stat="identity", aes(fill=emissionPerYear$type, colour=emissionPerYear$type)) + ggtitle("Sum emissions per year per type in Baltimore")
         # ggsave(targetFile, plotje, width=6, height=6)
 }
