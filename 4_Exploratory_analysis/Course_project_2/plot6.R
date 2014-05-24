@@ -27,5 +27,8 @@ q6_motorBaltLA <- function(location='/home/wijnand/Downloads/emissionData/',
         together$diffBalt <- Delt(together$EmissionsBalt)
         together$diffLa <- Delt(together$EmissionsLA)
         
-        barplot(t(data.frame(together$diffBalt,together$diffLa)) , together$year, names.arg=as.character(together$year), beside=TRUE, legend=c("Baltimore", "LA"), main="Percentage change emission")
+        png(targetFile, width=480, height=480)
+        barplot(t(data.frame(together$diffBalt,together$diffLa)) , together$year, names.arg=as.character(together$year), beside=TRUE, main="Change sum emission Baltimore vs LA", col=c("blue", "red"))
+        legend("top", legend=c("Baltimore", "LA"), fill=c("blue", "red"))
+        dev.off()
 }
