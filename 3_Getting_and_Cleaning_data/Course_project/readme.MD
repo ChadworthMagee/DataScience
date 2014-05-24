@@ -1,6 +1,10 @@
 ## Cook Book
 
+This script contains 1 function (run_analysis) with the location of the data as parameter. 
+The executed steps:
 
+
+Read all data
 ```{r}
         activityLabels <- read.table(paste(sourceDir, "activity_labels.txt", sep=''), header=FALSE)
         features <- read.table(paste(sourceDir, "features.txt", sep=''), header=FALSE)
@@ -46,3 +50,8 @@ Appropriately labels the data set with descriptive activity names.
 ```
 
 Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+```{r}
+        require(reshape2)
+        meltData <- melt(filteredData, id.var = c("subjectId", "activityId"))
+        tidyData <- dcast(meltData, subjectId + activityId ~ variable,mean)
+```

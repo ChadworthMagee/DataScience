@@ -47,5 +47,9 @@ runAnalysis <- function(sourceDir='/home/wijnand/Downloads/UCI HAR Dataset/')
         filteredData <- as.data.table(filteredData)
         setnames(filteredData, old=colnames(filteredData),new=cols)
         
-        filteredData
+        # tidy data
+        require(reshape2)
+        meltData <- melt(filteredData, id.var = c("subjectId", "activityId"))
+        tidyData <- dcast(meltData, subjectId + activityId ~ variable,mean)
+        write.table(tidyData, '/home/wijnand/R_workspace/3_Getting_and_Cleaning_data/Course_project/tidyData.csv', sep=';', row.names=FALSE)
 }
