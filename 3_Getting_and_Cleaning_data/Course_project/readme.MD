@@ -1,7 +1,7 @@
+## Cook Book
 
-runAnalysis <- function(sourceDir='/home/wijnand/Downloads/UCI HAR Dataset/')
-{
-        # load / read all relevant files 
+
+```{r}
         activityLabels <- read.table(paste(sourceDir, "activity_labels.txt", sep=''), header=FALSE)
         features <- read.table(paste(sourceDir, "features.txt", sep=''), header=FALSE)
         trainX <- read.table(paste(sourceDir, "train/X_train.txt", sep=''), header=FALSE)
@@ -10,34 +10,31 @@ runAnalysis <- function(sourceDir='/home/wijnand/Downloads/UCI HAR Dataset/')
         testY <- read.table(paste(sourceDir, "test/y_test.txt", sep=''), header=FALSE)
         trainTestSubject <- read.table(paste(sourceDir, "train/subject_train.txt", sep=''), header=FALSE)
         testTestSubject <- read.table(paste(sourceDir, "test/subject_test.txt", sep=''), header=FALSE)
-        
-        # set column names
-        colnames(activityLabels) <- c('activityId','activityType')
-        colnames(trainX) <- features[,2]
-        colnames(trainY) <- "activityId"
-        colnames(trainTestSubject) <- "subjectId"
-        colnames(testX) <- features[,2]
-        colnames(testY) <- "activityId"
-        colnames(testTestSubject) <- "subjectId"
-        
-        
-        # step 1, merge training and test sets
+```
+
+Merges the training and the test sets to create one data set.
+```{r}
         trainData <- cbind(trainY, trainTestSubject, trainX)
         testData <- cbind(testY, testTestSubject, testX)
         allData <- rbind(trainData, testData)
+```
 
-        # step 2, select the columns about mean / standard deviation (plus the activity / subject)
+Extracts only the measurements on the mean and standard deviation for each measurement. 
+```{r}
         cols <- c(grep("mean|activity|subject|std", colnames(allData)))
         filteredData <- allData[,cols]
-        
-        
-        # step 3, descriptive activity names
+```
+
+Uses descriptive activity names to name the activities in the data set
+```{r}      
         for(i in 1:length(filteredData[,1]))
         {
                 filteredData[i,1] <- as.character(activityLabels[filteredData[i,1],2])
         }
-        
-        # descriptive headers
+```
+
+Appropriately labels the data set with descriptive activity names. 
+```{r} 
         require(stringr)
         cols <- colnames(filteredData)
         cols <- str_replace_all(cols, "([-])" , "_" )
@@ -46,6 +43,6 @@ runAnalysis <- function(sourceDir='/home/wijnand/Downloads/UCI HAR Dataset/')
         require(data.table)
         filteredData <- as.data.table(filteredData)
         setnames(filteredData, old=colnames(filteredData),new=cols)
-        
-        filteredData
-}
+```
+
+Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
