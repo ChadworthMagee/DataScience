@@ -1,6 +1,4 @@
 # rm(list=ls(all=TRUE))
-location <- '/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/train.csv'
-
 
 loadData <- function(location='/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/train.csv')
 {
@@ -24,23 +22,8 @@ loadData <- function(location='/home/wijnand/R_workspace/8_Practical_Machine_Lea
         inTrain <- createDataPartition(data$classe, p = 0.7, list=F)
         training <- data[inTrain,]
         testing <- data[-inTrain,]
-                
-        # scale & center all numeric variables
-        # preObj <- preProcess(training[,sapply(training,is.numeric)], method=c("center","scale"))
         
-        print(str(training))
-        training
-        
-        trainedModel <- train(classe ~ . , training, 
-                              method="rf",
-        #                      method="C5.0",
-                              preProcess=NULL, 
-                              tuneLength = 5,
-                              trControl = trainControl(method = "cv"), 
-                              do.trace=T,
-                              ntree=100)
-        
-        print(trainedModel)
+        trainedModel <- train(classe ~ . , training, method="rf", trControl = trainControl(method = "cv", number = 2),do.trace=T,ntree=50)
         prediction <- predict(trainedModel, testing)
-        print(confusionMatrix(prediction, testing$classe))
+        confusionMatrix(prediction, testing$classe)
 }
