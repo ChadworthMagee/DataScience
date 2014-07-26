@@ -1,0 +1,65 @@
+## Peer Assessment Practical Machine Learning
+#### Predict activity type
+
+## Load the data
+```{r cache=TRUE}
+set.seed(1234)
+library(caret)
+location <- '/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/train.csv'
+data <- read.csv(location, na.strings = c("NA", "#DIV/0!", ""))
+```
+## Modify data
+#### Remove 'zero' and 'near-zero' columns
+```{r cache=TRUE}
+data$X <- NULL
+uselessColumns <- nearZeroVar(data, freqCut = 95/5, uniqueCut = 10, saveMetrics = T)
+uselessColumns <- names(data[,uselessColumns$zeroVar==TRUE | uselessColumns$nzv==TRUE])
+data <- data[,!(names(data) %in% uselessColumns)]
+```     
+
+####  Remove columns in which > 97% of the values are not available
+```{r cache=TRUE}
+data <- data[,colSums(is.na(data))<(nrow(data)*0.97)]
+```
+
+## Prepare data
+#### Randomize the dataset
+```{r cache=TRUE}
+data <- data[order(runif(nrow(data))),]
+```
+#### Create training & test part
+```{r cache=TRUE}
+inTrain <- createDataPartition(data$classe, p = 0.7, list=F)
+training <- data[inTrain,]
+testing <- data[-inTrain,]
+```
+
+## Train a random forest model
+```{r cache=TRUE}
+trainedModel <- train(classe ~ . , training, method="rf", trControl = trainControl(method = "cv", number = 2),do.trace=F,ntree=50)
+```
+## Predict
+#### Predict the test data using the created random-forest-model
+```{r pred1, cache=TRUE}
+prediction <- predict(trainedModel, testing)
+```
+
+#### Print the results
+```{r cache=TRUE}
+confusionMatrix(prediction, testing$classe)
+```
+The prediction accuracy is .998 on the 30% test-data which is awesome! 
+
+#### Predict unseen testdata
+```{r cache=TRUE}
+testdata <- read.csv('/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/test.csv', 
+                             na.strings = c("NA", "#DIV/0!", ""))
+prediction <- predict(trainedModel, testdata)
+n <- length(prediction)
+for(i in 1:n)
+{
+        filename <- paste0("/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/problem_id_",i,".txt")
+        write.table(prediction[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+}
+```
+All 20 (unseen) cases were predicted correctly.

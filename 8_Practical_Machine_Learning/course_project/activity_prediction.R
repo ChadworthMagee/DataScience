@@ -26,4 +26,21 @@ loadData <- function(location='/home/wijnand/R_workspace/8_Practical_Machine_Lea
         trainedModel <- train(classe ~ . , training, method="rf", trControl = trainControl(method = "cv", number = 2),do.trace=T,ntree=50)
         prediction <- predict(trainedModel, testing)
         confusionMatrix(prediction, testing$classe)
+        
+        testdata <- read.csv('/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/test.csv', 
+                             na.strings = c("NA", "#DIV/0!", ""))
+        prediction <- predict(trainedModel, testdata)
+        
+        pml_write_files(prediction)
+        
+        trainedModel
+}
+
+pml_write_files = function(x)
+{
+        n = length(x)
+        for(i in 1:n){
+                filename = paste0("/home/wijnand/R_workspace/8_Practical_Machine_Learning/course_project/resources/problem_id_",i,".txt")
+                write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+        }
 }
