@@ -1,3 +1,6 @@
+---
+output: pdf_document
+---
 ## Regression models - mtcars
 
 ## Executive summary
